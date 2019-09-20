@@ -1,7 +1,7 @@
 /* Leaflet Lab Map (Lab 1) */
 
 //function to instantiate the Leaflet map
-function createMap(){
+function createMap() {
     //create the map
     var map = L.map('map', {
         center: [39, -79],
@@ -12,53 +12,71 @@ function createMap(){
 
     //add Stamen Terrain base tilelayer
     L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.{ext}', {
-	attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &mdash; Observation Data provided by <a href="https://ebird.org/home">eBird</a>',
-	subdomains: 'abcd',
-	minZoom: 0,
-	maxZoom: 18,
-	ext: 'png'
+        attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &mdash; Observation Data provided by <a href="https://ebird.org/home">eBird</a>',
+        subdomains: 'abcd',
+        minZoom: 0,
+        maxZoom: 18,
+        ext: 'png'
     }).addTo(map);
 
     //call getData function - loads data using ajax
     getData(map);
-};
+}
 
-//create popup content function to call in pointTolayer() and updatePropSymbols()
-function createPopup(properties, attribute, layer, radius){
-    //add city to popup content string
-    var popupContent = "<p><b>City:</b> " + properties.City + "</p>";
 
-    //add formatted attribute to panel content string
-    var time = attribute.split("_")[1];
-    popupContent += "<p><b>Number of starts from " + time + ":</b> " + properties[attribute] + "</p>";
-
-    //replace the layer popup
-    layer.bindPopup(popupContent, {
-        offset: new L.Point(0,-radius)
-    });
-
-};
-
-// create function to calculate the radius of each proportional symbol using variable attValue defined in pointToLayer function
+//calculate the radius of each proportional symbol
 function calcPropRadius(attValue) {
     //scale factor to adjust symbol size evenly
-    var scaleFactor = 10;
+    var scaleFactor = 1;
     //area based on attribute value and scale factor
     var area = attValue * scaleFactor;
     //radius calculated based on area
-    var radius = Math.sqrt(area/Math.PI);
-    return radius;
-    
-    };
+    var radius = Math.sqrt(area / Math.PI);
 
-function pointToLayer(feature, latlng, attributes){
-    
-    //Determine which attribute to visualize with proportional symbols by creating attribute variable
+    return radius;
+}
+
+
+function updatePropSymbols(map, attribute) {
+    map.eachLayer(function (layer) {
+        if (layer.feature && layer.feature.properties[attribute]) {
+            //access feature properties
+            var props = layer.feature.properties;
+            //update each feature's radius based on new attribute values
+            var radius = calcPropRadius(props[attribute]);
+            layer.setRadius(radius);
+            
+            createPopup(props, attribute, layer, radius);
+            updateLegend(map, attribute)
+        }
+    })
+}  
+
+
+
+function createPopup(properties, attribute, layer, radius) {
+    //add city to popup content string
+    var popupContent = "<p><b>City:</b> " + properties.City + "</p>";
+                      
+    //add formatted attribute to panel content string
+    var time = attribute.split("_")[1];
+    popupContent += "<p><b>Number of birders starting between " + time + ":</b> " + properties[attribute] + "</p>";
+            
+    //replace the layer popup
+    layer.bindPopup(popupContent, {
+        offset: new L.Point(0, -radius)
+    });
+}
+
+
+function pointToLayer(feature, latlng, attributes) {
+    //determine which attribute to visualize
     var attribute = attributes[0];
     
-    //create marker options using geojsonMarkerOptions variable
+    //console.log(attribute);
+    
+    //create marker options
     var geojsonMarkerOptions = {
-        radius: 8,
         fillColor: "#ff7800",
         color: "#000",
         weight: 1,
@@ -66,150 +84,196 @@ function pointToLayer(feature, latlng, attributes){
         fillOpacity: 0.8
     };
     
-    //define attValue variable used in calcPropRadius function
+    //for each feature, determine value for selected attribute
     var attValue = Number(feature.properties[attribute]);
-    
-    //Give each feature's circle marker a radius based on its attribute value
+            
     geojsonMarkerOptions.radius = calcPropRadius(attValue);
     
-    //create circle marker layer as variable
+    //check it
+    //console.log(feature.properties, attValue);
+    
     var layer = L.circleMarker(latlng, geojsonMarkerOptions);
     
-    //build popup content
-    var panelContent = feature.properties.City;
-    
-    
     createPopup(feature.properties, attribute, layer, geojsonMarkerOptions.radius);
-
-
-    //event listeners to open popup on hover
-    layer.on({
-        mouseover: function(){
-            this.openPopup();
-        },
-        mouseout: function(){
-            this.closePopup();
-        },
-        click: function(){
-            $("#panel").html(panelContent);
-        }
-    });
     
     
-    //return the circle marker to the L.geoJason pointToLayer option;
+    //return circle marker to pointToLayer option
     return layer;
-};
+}
 
 
-
-//Function to add circle markers for point features to the map
-function createPropSymbols(data, map, attributes){
+//Add circle markers for point features to the map
+function createPropSymbols(data, map, attributes) {
     //create a Leaflet GeoJSON layer and add it to the map
     L.geoJson(data, {
-        pointToLayer: function(feature, latlng){
+        pointToLayer: function (feature, latlng) {
             return pointToLayer(feature, latlng, attributes);
         }
     }).addTo(map);
-};
+}
+
 
 //Create new sequence controls
-function createSequenceControls(map, attributes){
-    
-    //click listener for buttons
-    $('.skip').click(function(){
-        //get the old index value
-        var index = $('.range-slider').val();
-
-        //increment or decrement depending on button clicked
-        if ($(this).attr('id') == 'forward'){
-            index++;
-            //if past the last attribute, wrap around to first attribute
-            index = index > 23 ? 0 : index;
-        } else if ($(this).attr('id') == 'reverse'){
-            index--;
-            //if past the first attribute, wrap around to last attribute
-            index = index < 0 ? 23 : index;
-        };
-                    
-        //update slider
-        $('.range-slider').val(index);
-                
-        //pass new attribute to update symbols
-        updatePropSymbols(map, attributes[index]);
-                    
-    });
-    
-    
-    //input listener for slider
-    $('.range-slider').on('input', function(){
-                
-        //get the new index value
-        var index = $(this).val();
-        
-        //pass new attribute to update symbols
-        updatePropSymbols(map, attributes[index]);
-
-    });
-    
-    
-    
-    //create new leaflet class to move UI controls to map
+function createSequenceControls(map, attributes) {
+    /*
     var SequenceControl = L.Control.extend({
-        options:{
-            position:"bottomleft"
+        options: {
+            position: "bottomleft"
         },
         
         onAdd: function (map) {
-            //create control div container with a particular class name
+            
+            //create control container div
             var container = L.DomUtil.create("div", "sequence-control-container");
             
-            //add all elements, listeners, etc into class
+            //initialize DOM elements, add listeners, etc.
+            //create range input element (slider)
+            $(container).append('<input class="range-slider" type="range">');
     
-                //create range input element (slider)
-                $(container).append('<input class="range-slider" type="range">');
+            //set slider attributes
+            $('.range-slider').attr({
+                max: 23,
+                min: 0,
+                value: 0,
+                step: 1
+            });
+
+            $(container).append('<button class="skip" id="reverse">Previous</button>');
+            $(container).append('<button class="skip" id="forward">Next</button>');
     
-                //Add skip buttons
-                $(container).append('<button class="skip" id="reverse" title="Reverse">Previous</button>');
-                $(container).append('<button class="skip" id="forward" title="Forward">Next</button>');
+            //click listener for buttons
+            $('.skip').click(function () {
+                //get the old index value
+                var index = $(".range-slider").val()
+        
+                //increment or decrement based on click
+                if ($(this).attr('id') == 'forward') {
+                    index++;
+                    //Step 7: if past the last attribute, wrap around to first attribute
+                    index = index > 23 ? 0 : index;
+                } else if ($(this).attr('id') ==   'reverse') {
+                    index--;
+                    //Step 7: if past the first attribute, wrap around to last attribute
+                    index = index < 0 ? 23 : index;
+                    
+                    console.log(index);
+                }
+
+                //update slider
+                $('.range-slider').val(index);
                 
-                //Replace button content with images -- this does not work
-                /*$('#reverse').html('<img src="img/icon_reverse.png">');
-                $('#forward').html('<img src="">');*/
-    
-                //set slider attributes
-                $('.range-slider').attr({
-                    max: 24,
-                    min: 0,
-                    value: 0,
-                    step: 1
-                });
-    
+                //pass new attribute to update symbols
+                updatePropSymbols(map, attributes[index]);
+        
+            });
 
-
-
-            
-            
-
-            
-            
-            
+            //input listener for slider
+            $('.range-slider').on('input', function () {
+                //get the new index value
+                var index = $(this).val();
+      
+                //pass new attribute to update symbols
+                updatePropSymbols(map, attributes[index]);
+        
+            });
             
             
             //kill any mouse event listeners on the map
-            //currently works for dblclick but not mousedown (doesn't work on slider)
             $(container).on('mousedown dblclick', function(e){
                 L.DomEvent.stopPropagation(e);
-                    
             });
+            
             
             return container;
         }
-    });
+    })
     
     map.addControl(new SequenceControl());
+    */
+    
+    
+    //create range input element (slider)
+    $('#slider').append('<input class="range-slider" type="range">');
+    
+        //set slider attributes
+    $('.range-slider').attr({
+        max: 23,
+        min: 0,
+        value: 0,
+        step: 1
+    });
 
+    $('#slider').append('<button class="skip" id="reverse">Previous</button>');
+    $('#slider').append('<button class="skip" id="forward">Next</button>');
+    
+    //click listener for buttons
+    $('.skip').click(function () {
+        //get the old index value
+        var index = $(".range-slider").val()
+        
+        //increment or decrement based on click
+        if ($(this).attr('id') == 'forward') {
+            index++;
+            //Step 7: if past the last attribute, wrap around to first attribute
+            index = index > 23 ? 0 : index;
+        } else if ($(this).attr('id') == 'reverse') {
+            index--;
+            //Step 7: if past the first attribute, wrap around to last attribute
+            index = index < 0 ? 23 : index;
+        }
+
+        //update slider
+        $('.range-slider').val(index);
+        
+        //Step 9: pass new attribute to update symbols
+        updatePropSymbols(map, attributes[index]);
+        
+    });
+
+    //input listener for slider
+    $('.range-slider').on('input', function () {
+        //get the new index value
+        var index = $(this).val();
+      
+        //pass new attribute to update symbols
+        updatePropSymbols(map, attributes[index]);
+        
+    });
+    
+}
+
+//Update the legend with new attribute
+function updateLegend(map, attribute){
+    //create content for legend
+    var time = attribute.split("_")[1];
+    var content = "Number of birders starting their observations from " + time;
+
+    //replace legend content
+    $('#temporal-legend').html(content);
+    
+    //get the max, mean, and min values as an object
+    var circleValues = getCircleValues(map, attribute);
+    
+    for (var key in circleValues){
+        //get the radius
+        var radius = calcPropRadius(circleValues[key]);
+
+        //Step 3: assign the cy and r attributes
+        $('#'+key).attr({
+            cy: 150 - radius,
+            r: radius
+        });
+        
+        //Step 4: add legend text
+        $('#'+key+'-text').text(Math.round(circleValues[key]*100)/100 + " birding tracks");
+        
+        
+    };
+    
+    
 };
 
+ 
 function createLegend(map, attributes){
     var LegendControl = L.Control.extend({
         options: {
@@ -221,84 +285,52 @@ function createLegend(map, attributes){
             var container = L.DomUtil.create('div', 'legend-control-container');
             
             //add temporal legend div to container
-            $(container).append("<div id='temporal-legend'>")
+            $(container).append('<div id="temporal-legend">')
 
-            //start attribute legend svg string
-            var svg = '<svg id="attribute-legend" width="180px" height="180px">';
+            //Step 1: start attribute legend svg string
+            var svg = '<svg id="attribute-legend" width="280px" height="240px">';
             
             //array of circle names to base loop on
-            var circles = ["max", "mean", "min"];
+            var circles = {
+                max: 20,
+                mean: 40,
+                min: 60
+            }
 
-            //loop to add each circle and text to svg string
-            for (var i=0; i<circles.length; i++){
-            
-                //circle string
-                svg += '<circle class="legend-circle" id="' + circles[i] + 
-                    '" fill="#F47821" fill-opacity="0.8" stroke="#000000" cx="90"/>';
+            //Step 2: loop to add each circle and text to svg string
+            for (var circle in circles){
+            //circle string
+                svg += '<circle class="legend-circle" id="' + circle + 
+                    '" fill="#F47821" fill-opacity="0.8" stroke="#000000" cx="100"/>';
+                
+                //text string
+                svg += '<text id="' + circle + '-text" x="170" y="' + circles[circle] + '"></text>';              
+                
             };
 
             //close svg string
-            svg += "</svg>";
+            svg += "</svg>";            
+            
+            
+            
 
             //add attribute legend svg to container
-            $(container).append(svg);            
+            $(container).append(svg);
             
-            
+            //kill any mouse event listeners on the map
+            $(container).on('mousedown dblclick', function(e){
+                L.DomEvent.stopPropagation(e);
+            });
+
             return container;
         }
     });
 
     map.addControl(new LegendControl());
     
-    updateLegend(map, attributes[0])
+    updateLegend(map, attributes[0]);
 };
 
-
-//Update the legend with new attribute
-function updateLegend(map, attribute){
-    
-    //create content for legend   
-    var time = attribute.split("-")[1]
-    var legendText = '<p class="title">  <b>Number of Birders Starting Observations from ' + time + '</b></p>';
-
-    //replace legend content
-    $('#temporal-legend').html(legendText);
-    
-    //get the max, mean, and min values as an object
-    var circleValues = getCircleValues(map, attribute);
-    
-    for (var key in circleValues){
-        //get the radius
-        var radius = calcPropRadius(circleValues[key]);
-
-        //Step 3: assign the cy and r attributes
-        $('#'+key).attr({
-            cy: 179 - radius,
-            r: radius
-        });
-    };
-};
-
-
-//resize proportional symbols according to new attribute values
-function updatePropSymbols(map, attribute){
-    
-    map.eachLayer(function(layer){
-        if (layer.feature && layer.feature.properties[attribute]){
-            var props = layer.features.properties;
-            
-            var radius = calcPropRadius(props[attribute]);
-            layer.setRadius(radius);
-            
-            //call createPopup()
-            createPopup(props, attribute, layer, radius);
-            
-            updateLegend(map, attribute);
-            
-        };
-    });
-};
-                          
 //Calculate the max, mean, and min values for a given attribute
 function getCircleValues(map, attribute){
     //start with min at highest possible and max at lowest possible number
@@ -333,49 +365,47 @@ function getCircleValues(map, attribute){
     };
 };
 
+
 //build an attributes array from the data
-function processData(data){
-    
+function processData(data) {
     //empty array to hold attributes
     var attributes = [];
-    
+
     //properties of the first feature in the dataset
     var properties = data.features[0].properties;
 
     //push each attribute name into attributes array
     for (var attribute in properties){
-        
-        //only take attributes with start values
+        //only take attributes with population values
         if (attribute.indexOf("start") > -1){
             attributes.push(attribute);
-        };
-    };
+        }
+    }
 
     //check result
     //console.log(attributes);
 
     return attributes;
-};
+}
+
 
 //Import GeoJSON data using ajax
-function getData(map){
+function getData(map) {
     //load the data
     $.ajax("data/leafletLab.geojson", {
         dataType: "json",
-        success: function(response){
-            //create an attribute array
+        success: function (response) {
+            
+            //create an attributes array
             var attributes = processData(response);
             
-            //call function to create proportional symbols
-            createPropSymbols(response, map, attributes);
-            
-            //call sequence controls function within getData function so it can access data with ajax
+            //call functions
+            createPropSymbols(response, map, attributes); 
             createSequenceControls(map, attributes);
-            
-            createLegend(map, attributes);
+            createLegend(map, attributes)
         }
     });
-};
+}
 
 
 $(document).ready(createMap);
