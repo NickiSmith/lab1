@@ -1,7 +1,22 @@
-#map { height: 480px; }
+#map { 
+    height: 650px;
+    width: 600px;
+}
 
 #title {
     font-family: sans-serif;
+    color: dimgray
+}
+
+#subtitle {
+    font-family: sans-serif;
+    color: dimgrey
+}
+
+#gbdDate {
+    font-family: sans-serif;
+    color: dimgray;
+    text-align: left;
 }
 
 #panel {
@@ -21,7 +36,7 @@
 }
 
 .sequence-control-container {
-    width: 350px;
+    width: 250px;
     height: 30px;
     background-color: rgba(255,255,255,0.8);
     padding: 10px;
@@ -32,13 +47,17 @@
 
 .legend-control-container {
     width: 300px;
-    height: 300px;
+    height: 250px;
     background-color: rgba(255,255,255,0.8);
     padding: 10px;
     line-height: 25px;
     text-align: center;
     font-family: sans-serif;
     border: solid gray 1px;
+}
+
+#temporal-legend {
+    color: dimgray;
 }
 
 #slideHeader {

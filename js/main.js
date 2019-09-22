@@ -1,13 +1,14 @@
 /* Leaflet Lab Map (Lab 1) */
 
 //function to instantiate the Leaflet map
-function createMap() {
+function createMap() {    
     //create the map
     var map = L.map('map', {
-        center: [39, -79],
-        zoom: 4,
+        center: [34, -75],
+        zoom: 4.5,
         maxZoom: 7,
-        minZoom: 4
+        minZoom: 4,
+        //maxBounds: myBounds
     });
 
     //add Stamen Terrain base tilelayer
@@ -27,7 +28,7 @@ function createMap() {
 //calculate the radius of each proportional symbol
 function calcPropRadius(attValue) {
     //scale factor to adjust symbol size evenly
-    var scaleFactor = 1;
+    var scaleFactor = 5;
     //area based on attribute value and scale factor
     var area = attValue * scaleFactor;
     //radius calculated based on area
@@ -77,8 +78,8 @@ function pointToLayer(feature, latlng, attributes) {
     
     //create marker options
     var geojsonMarkerOptions = {
-        fillColor: "#ff7800",
-        color: "#000",
+        fillColor: "#FFC300",
+        color: "#BBB9B9",
         weight: 1,
         opacity: 1,
         fillOpacity: 0.8
@@ -115,7 +116,7 @@ function createPropSymbols(data, map, attributes) {
 
 //Create new sequence controls
 function createSequenceControls(map, attributes) {
-    /*
+    
     var SequenceControl = L.Control.extend({
         options: {
             position: "bottomleft"
@@ -149,11 +150,11 @@ function createSequenceControls(map, attributes) {
                 //increment or decrement based on click
                 if ($(this).attr('id') == 'forward') {
                     index++;
-                    //Step 7: if past the last attribute, wrap around to first attribute
+                    //if past the last attribute, wrap around to first attribute
                     index = index > 23 ? 0 : index;
                 } else if ($(this).attr('id') ==   'reverse') {
                     index--;
-                    //Step 7: if past the first attribute, wrap around to last attribute
+                    //if past the first attribute, wrap around to last attribute
                     index = index < 0 ? 23 : index;
                     
                     console.log(index);
@@ -189,9 +190,9 @@ function createSequenceControls(map, attributes) {
     })
     
     map.addControl(new SequenceControl());
-    */
     
     
+   
     //create range input element (slider)
     $('#slider').append('<input class="range-slider" type="range">');
     
@@ -205,6 +206,8 @@ function createSequenceControls(map, attributes) {
 
     $('#slider').append('<button class="skip" id="reverse">Previous</button>');
     $('#slider').append('<button class="skip" id="forward">Next</button>');
+    
+    
     
     //click listener for buttons
     $('.skip').click(function () {
@@ -228,6 +231,8 @@ function createSequenceControls(map, attributes) {
         //Step 9: pass new attribute to update symbols
         updatePropSymbols(map, attributes[index]);
         
+        console.log(index);
+        
     });
 
     //input listener for slider
@@ -238,7 +243,11 @@ function createSequenceControls(map, attributes) {
         //pass new attribute to update symbols
         updatePropSymbols(map, attributes[index]);
         
+        console.log(index);
+        
     });
+    
+    
     
 }
 
@@ -246,7 +255,7 @@ function createSequenceControls(map, attributes) {
 function updateLegend(map, attribute){
     //create content for legend
     var time = attribute.split("_")[1];
-    var content = "Number of birders starting their observations from " + time;
+    var content = "<h3><b>Number starting between " + time + "</b></h3>";
 
     //replace legend content
     $('#temporal-legend').html(content);
@@ -265,7 +274,7 @@ function updateLegend(map, attribute){
         });
         
         //Step 4: add legend text
-        $('#'+key+'-text').text(Math.round(circleValues[key]*100)/100 + " birding tracks");
+        $('#'+key+'-text').text(Math.round(circleValues[key]*100)/100);
         
         
     };
@@ -287,24 +296,24 @@ function createLegend(map, attributes){
             //add temporal legend div to container
             $(container).append('<div id="temporal-legend">')
 
-            //Step 1: start attribute legend svg string
-            var svg = '<svg id="attribute-legend" width="280px" height="240px">';
+            //start attribute legend svg string
+            var svg = '<svg id="attribute-legend" width="280px" height="170px">';
             
             //array of circle names to base loop on
             var circles = {
-                max: 20,
-                mean: 40,
-                min: 60
+                max: 100,
+                mean: 120,
+                min: 140
             }
 
             //Step 2: loop to add each circle and text to svg string
             for (var circle in circles){
             //circle string
                 svg += '<circle class="legend-circle" id="' + circle + 
-                    '" fill="#F47821" fill-opacity="0.8" stroke="#000000" cx="100"/>';
+                    '" fill="#FFC300" fill-opacity="0.8" stroke="#BBB9B9" cx="100"/>';
                 
                 //text string
-                svg += '<text id="' + circle + '-text" x="170" y="' + circles[circle] + '"></text>';              
+                svg += '<text id="' + circle + '-text" x="200" y="' + circles[circle] + '"></text>';              
                 
             };
 
@@ -376,7 +385,7 @@ function processData(data) {
 
     //push each attribute name into attributes array
     for (var attribute in properties){
-        //only take attributes with population values
+        //only take attributes with start in the header
         if (attribute.indexOf("start") > -1){
             attributes.push(attribute);
         }
