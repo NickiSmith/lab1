@@ -39,8 +39,16 @@ function calcPropRadius(attValue) {
 
 
 function updatePropSymbols(map, attribute) {
+    //checking for value of attribute passed in
+    console.log('Inside updatePropSymbols, attribute: ' + attribute)
+    
     map.eachLayer(function (layer) {
+        
         if (layer.feature && layer.feature.properties[attribute]) {
+            
+            //test whether if evaluated true
+            console.log('Inside map.eachLayer')
+            
             //access feature properties
             var props = layer.feature.properties;
             //update each feature's radius based on new attribute values
@@ -48,6 +56,9 @@ function updatePropSymbols(map, attribute) {
             layer.setRadius(radius);
             
             createPopup(props, attribute, layer, radius);
+            
+            //console.log('Update prop symbols: ' + attribute);
+            
             updateLegend(map, attribute)
         }
     })
@@ -116,7 +127,7 @@ function createPropSymbols(data, map, attributes) {
 
 //Create new sequence controls
 function createSequenceControls(map, attributes) {
-    
+        
     var SequenceControl = L.Control.extend({
         options: {
             position: "bottomleft"
@@ -131,6 +142,8 @@ function createSequenceControls(map, attributes) {
             //create range input element (slider)
             $(container).append('<input class="range-slider" type="range">');
     
+            
+            /*
             //set slider attributes
             $('.range-slider').attr({
                 max: 23,
@@ -138,6 +151,8 @@ function createSequenceControls(map, attributes) {
                 value: 0,
                 step: 1
             });
+            
+            */
 
             $(container).append('<button class="skip" id="reverse">Previous</button>');
             $(container).append('<button class="skip" id="forward">Next</button>');
@@ -191,8 +206,17 @@ function createSequenceControls(map, attributes) {
     
     map.addControl(new SequenceControl());
     
+        //set slider attributes
+    $('.range-slider').attr({
+        max: 23,
+        min: 0,
+        value: 0,
+        step: 1
+    });
     
-   
+    
+  /* 
+    
     //create range input element (slider)
     $('#slider').append('<input class="range-slider" type="range">');
     
@@ -207,7 +231,7 @@ function createSequenceControls(map, attributes) {
     $('#slider').append('<button class="skip" id="reverse">Previous</button>');
     $('#slider').append('<button class="skip" id="forward">Next</button>');
     
-    
+   */ 
     
     //click listener for buttons
     $('.skip').click(function () {
@@ -217,18 +241,23 @@ function createSequenceControls(map, attributes) {
         //increment or decrement based on click
         if ($(this).attr('id') == 'forward') {
             index++;
-            //Step 7: if past the last attribute, wrap around to first attribute
+            //if past the last attribute, wrap around to first attribute
             index = index > 23 ? 0 : index;
         } else if ($(this).attr('id') == 'reverse') {
             index--;
-            //Step 7: if past the first attribute, wrap around to last attribute
+            //if past the first attribute, wrap around to last attribute
             index = index < 0 ? 23 : index;
         }
 
         //update slider
         $('.range-slider').val(index);
         
-        //Step 9: pass new attribute to update symbols
+        console.log('Index: ' + index);
+        var attribute = attributes[index];
+        console.log('Attribute: ' + attribute);
+        
+        
+        //pass new attribute to update symbols
         updatePropSymbols(map, attributes[index]);
         
         console.log(index);
@@ -255,6 +284,7 @@ function createSequenceControls(map, attributes) {
 function updateLegend(map, attribute){
     //create content for legend
     var time = attribute.split("_")[1];
+    console.log(time);
     var content = "<h3><b>Number starting between " + time + "</b></h3>";
 
     //replace legend content
@@ -392,7 +422,7 @@ function processData(data) {
     }
 
     //check result
-    //console.log(attributes);
+    console.log(attributes);
 
     return attributes;
 }
