@@ -141,18 +141,6 @@ function createSequenceControls(map, attributes) {
             //initialize DOM elements, add listeners, etc.
             //create range input element (slider)
             $(container).append('<input class="range-slider" type="range">');
-    
-            
-            /*
-            //set slider attributes
-            $('.range-slider').attr({
-                max: 23,
-                min: 0,
-                value: 0,
-                step: 1
-            });
-            
-            */
 
             $(container).append('<button class="skip" id="reverse">Previous</button>');
             $(container).append('<button class="skip" id="forward">Next</button>');
@@ -215,8 +203,7 @@ function createSequenceControls(map, attributes) {
     });
     
     
-  /* 
-    
+    /*
     //create range input element (slider)
     $('#slider').append('<input class="range-slider" type="range">');
     
@@ -231,7 +218,7 @@ function createSequenceControls(map, attributes) {
     $('#slider').append('<button class="skip" id="reverse">Previous</button>');
     $('#slider').append('<button class="skip" id="forward">Next</button>');
     
-   */ 
+    */
     
     //click listener for buttons
     $('.skip').click(function () {
