@@ -1,22 +1,33 @@
 #map { 
     height: 650px;
-    width: 600px;
+    width: 70%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #title {
     font-family: sans-serif;
-    color: dimgray
+    color: whitesmoke;
 }
 
 #subtitle {
+    width: 70%;
+    text-align: left;
     font-family: sans-serif;
-    color: dimgrey
+    color: dimgrey;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-#gbdDate {
+#gbd-date {
+    font-size: 30px;
     font-family: sans-serif;
-    color: dimgray;
+    color: whitesmoke;
     text-align: left;
+    text-shadow: 2px 2px 35px #000000;
+    
 }
 
 #panel {
@@ -76,4 +87,31 @@
 
 .leaflet-popup-content p {
     margin: 0.2em 0;
+}
+
+/*Add CSS for div and header */
+/* Container holding the image and the text */
+#img-container {
+  background-color: dimgray;
+  position: relative;
+  text-align: left;
+  color: whitesmoke;
+}
+
+/* Top left text */
+.bottom-left {
+  position: absolute;
+  top: 8px;
+  left: 16px;
+  font-family: sans-serif;
+  font-size: 45px;
+  font-weight: 600;
+  text-shadow: 2px 2px 35px #000000;
+  
+}
+
+#map-container {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }

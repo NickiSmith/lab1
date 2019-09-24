@@ -40,7 +40,7 @@ function calcPropRadius(attValue) {
 
 function updatePropSymbols(map, attribute) {
     //checking for value of attribute passed in
-    console.log('Inside updatePropSymbols, attribute: ' + attribute)
+    //console.log('Inside updatePropSymbols, attribute: ' + attribute)
     
     map.eachLayer(function (layer) {
         
@@ -72,7 +72,8 @@ function createPopup(properties, attribute, layer, radius) {
                       
     //add formatted attribute to panel content string
     var time = attribute.split("_")[1];
-    popupContent += "<p><b>Number of birders starting between " + time + ":</b> " + properties[attribute] + "</p>";
+    var ampm = attribute.split("_")[2];
+    popupContent += "<p><b>Number of birders starting between " + time + " " + ampm + ":</b> " + properties[attribute] + "</p>";
             
     //replace the layer popup
     layer.bindPopup(popupContent, {
@@ -271,8 +272,9 @@ function createSequenceControls(map, attributes) {
 function updateLegend(map, attribute){
     //create content for legend
     var time = attribute.split("_")[1];
+    var ampm = attribute.split("_")[2];
     console.log(time);
-    var content = "<h3><b>Number starting between " + time + "</b></h3>";
+    var content = "<h3><b>Number starting between " + time + " " + ampm + "</b></h3>";
 
     //replace legend content
     $('#temporal-legend').html(content);
