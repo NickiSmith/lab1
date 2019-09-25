@@ -383,7 +383,7 @@ function getCircleValues(map, attribute){
     });
 
     //set mean
-    var mean = (max + min) / 2;
+    var mean = Math.round((max + min) / 2);
 
     //return values as an object
     return {
