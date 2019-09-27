@@ -64,11 +64,19 @@ function updatePropSymbols(map, attribute) {
     })
 }  
 
+//Add population to popups and format with commas
+function numberWithCommas(x) {
+
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
 
 function createPopup(properties, attribute, layer, radius) {
+    //format population values with commas
+    var pop = numberWithCommas(properties.Population2012);
+    
     //add city to popup content string
-    var popupContent = "<p><b>City:</b> " + properties.City + "</p>";
+    var popupContent = "<p><b>City:</b> " + properties.City + "</p>" + "<p><b>Population: </b>" + pop;
                       
     //add formatted attribute to panel content string
     var time = attribute.split("_")[1];
@@ -77,7 +85,8 @@ function createPopup(properties, attribute, layer, radius) {
             
     //replace the layer popup
     layer.bindPopup(popupContent, {
-        offset: new L.Point(0, -radius)
+        offset: new L.Point(0, -radius),
+        minWidth: 320
     });
 }
 
@@ -115,13 +124,56 @@ function pointToLayer(feature, latlng, attributes) {
 }
 
 
-//Add circle markers for point features to the map
-function createPropSymbols(data, map, attributes) {
+
+
+//Add circle markers for point features to the map - ORIGINAL DUPLICATED BELOW WITH FILTER OPTIONS
+/*function createPropSymbols(data, map, attributes) {
     //create a Leaflet GeoJSON layer and add it to the map
     L.geoJson(data, {
         pointToLayer: function (feature, latlng) {
             return pointToLayer(feature, latlng, attributes);
         }
+    }).addTo(map);
+}*/
+
+//Add circle markers for point features to the map - WITH FILTER
+function createPropSymbols(data, map, attributes) {
+    //create a Leaflet GeoJSON layer with all data and add it to the map
+    var pop100 = L.geoJson(data, {
+        pointToLayer: function (feature, latlng) {
+            return pointToLayer(feature, latlng, attributes);
+        }
+    })
+
+   //create a Leaflet GeoJSON layer with pop > 250,000
+    var pop250 = L.geoJson(data, {
+        filter: function (feature, layer) {
+            var pop = Number(feature.properties.Population2012);
+            return pop > 250000;           
+        },
+        pointToLayer: function (feature, latlng) {
+            return pointToLayer(feature, latlng, attributes);
+        }
+    })
+   
+
+    //create a Leaflet GeoJSON with pop > 500,000
+    var pop500 = L.geoJson(data, {
+        filter: function (feature, layer) {
+            var pop = Number(feature.properties.Population2012);
+            return pop > 500000;
+        },
+        pointToLayer: function (feature, latlng) {
+            return pointToLayer(feature, latlng, attributes);
+        }
+    })
+
+    pop100.addTo(map);
+
+    L.control.layers({
+        "Cities with population greater than 100,000": pop100,
+        "Cities with population greater than 250,000": pop250,
+        "Cities with population greater than 500,000": pop500
     }).addTo(map);
 }
 
