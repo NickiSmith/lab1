@@ -180,12 +180,23 @@ function createSequenceControls(map, attributes) {
                 L.DomEvent.stopPropagation(e);
             });
             
-            
+            // Disable dragging when user's cursor enters the element
+            container.addEventListener('mouseover', function () {
+                map.dragging.disable();
+            });
+
+            // Re-enable dragging when user's cursor leaves the element
+            container.addEventListener('mouseout', function () {
+                map.dragging.enable();
+            });
+   
             return container;
         }
     })
     
     map.addControl(new SequenceControl());
+    
+
     
         //set slider attributes
     $('.range-slider').attr({
@@ -231,10 +242,11 @@ function createSequenceControls(map, attributes) {
       
         //pass new attribute to update symbols
         updatePropSymbols(map, attributes[index]);
-        
         console.log(index);
         
     });   
+    
+    
 }
 
 //Update the legend with new attribute
@@ -255,13 +267,13 @@ function updateLegend(map, attribute){
         //get the radius
         var radius = calcPropRadius(circleValues[key]);
 
-        //Step 3: assign the cy and r attributes
+        //assign the cy and r attributes
         $('#'+key).attr({
             cy: 150 - radius,
             r: radius
         });
         
-        //Step 4: add legend text
+        //add legend text
         $('#'+key+'-text').text(Math.round(circleValues[key]*100/100));
     };  
 };
@@ -279,7 +291,18 @@ function createLegend(map, attributes){
             
             //add temporal legend div to container
             $(container).append('<div id="temporal-legend">')
+            
+            
+  /*          // Disable dragging when user's cursor enters the element
+            container.addEventListener('mouseover', function () {
+                map.dragging.disable();
+            });
 
+            // Re-enable dragging when user's cursor leaves the element
+            container.addEventListener('mouseout', function () {
+                map.dragging.enable();
+            });
+*/
             //start attribute legend svg string
             var svg = '<svg id="attribute-legend" width="280px" height="170px">';
             
