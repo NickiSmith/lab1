@@ -4,6 +4,7 @@
     display: block;
     margin-left: auto;
     margin-right: auto;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 #title {
@@ -26,37 +27,23 @@
     font-family: sans-serif;
     color: whitesmoke;
     text-align: left;
-    text-shadow: 2px 2px 35px #000000;
-    
-}
-
-#panel {
-    width: 100%;
-    padding: 20px;
-    display: inline-block;
-    vertical-align: top;
-}
-
-#slider {
-    width: 40%;
-    height: 50px;
-    padding: 20px;
-    display: inline-block;
-    vertical-align: top;
-    text-align: center;
+    text-shadow: 2px 2px 35px #000000;   
 }
 
 .sequence-control-container {
-    width: 250px;
+    border-radius: 5px;
+    width: 300px;
     height: 30px;
     background-color: rgba(255,255,255,0.8);
     padding: 10px;
     line-height: 45px;
     text-align: center;
     border: solid gray 1px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .legend-control-container {
+    border-radius: 5px;
     width: 300px;
     height: 250px;
     background-color: rgba(255,255,255,0.8);
@@ -65,24 +52,25 @@
     text-align: center;
     font-family: sans-serif;
     border: solid gray 1px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 #temporal-legend {
     color: dimgray;
 }
 
-#slideHeader {
-    text-align: center;
-    font-size: 12pt;
-    font-family: sans-serif
-}
-
 #forward {
+    border-radius: 5px;
     float: right;
+    background-color: gainsboro;
+    color: dimgray;
 }
 
 #reverse {
+    border-radius: 5px;
     float: left;
+    background-color: gainsboro;
+    color: dimgray;
 }
 
 .leaflet-popup-content p {
@@ -107,11 +95,32 @@
   font-size: 45px;
   font-weight: 600;
   text-shadow: 2px 2px 35px #000000;
-  
 }
 
 #map-container {
     display: block;
     margin-left: auto;
     margin-right: auto;
+}
+
+.range-slider {
+  -webkit-appearance: none;
+  width: 50%;
+  height: 5px;
+  border-radius: 5px;   
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%; 
+  background: #FFC300;
+  cursor: pointer;
 }
