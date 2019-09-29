@@ -93,19 +93,27 @@
 }
 
 /*Add CSS for div and header */
-/* Container holding the image and the text */
 #img-container {
   background-color: dimgray;
   position: relative;
-  text-align: left;
+  text-align: center;
   color: whitesmoke;
+  height: 150px;
+  width: 100%;
+}
+
+#coverImg {
+    height: 150px;
+    width: 100%;
+    object-fit: cover;
+    opacity: 0.5;
 }
 
 /* Top left text */
 .bottom-left {
   position: absolute;
-  top: 8px;
-  left: 16px;
+  top: 20px;
+  left: auto;
   font-family: sans-serif;
   font-size: 45px;
   font-weight: 600;
