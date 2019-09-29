@@ -13,7 +13,7 @@ function createMap() {
 
     //add Stamen Terrain base tilelayer
     L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.{ext}', {
-        attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &mdash; Observation Data provided by <a href="https://ebird.org/home">eBird</a>',
+        attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &mdash; Observation Data provided by <a href="https://ebird.org/home">eBird</a> origami bird by Symbolon from the Noun Project',
         subdomains: 'abcd',
         minZoom: 0,
         maxZoom: 18,
@@ -173,7 +173,7 @@ function createSequenceControls(map, attributes) {
 
             $(container).append('<button class="skip" id="reverse">Previous</button>');
             $(container).append('<button class="skip" id="forward">Next</button>');
-            
+          
             //kill any mouse event listeners on the map
             //this doesn't actually work for mousedown
             $(container).on('mousedown dblclick', function(e){
@@ -189,14 +189,16 @@ function createSequenceControls(map, attributes) {
             container.addEventListener('mouseout', function () {
                 map.dragging.enable();
             });
-   
+
             return container;
         }
     })
     
     map.addControl(new SequenceControl());
     
-
+    //Add button icons- this doesn’t work yet
+    $("#forward").html("<img id='iconF' src='img/birdIcon.png'>");
+    $("#reverse").html("<img id='iconR' src='img/birdIcon.png'>");
     
         //set slider attributes
     $('.range-slider').attr({

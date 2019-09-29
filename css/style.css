@@ -60,6 +60,8 @@
 }
 
 #forward {
+    width: 60px;
+    height: 30px;
     border-radius: 5px;
     float: right;
     background-color: gainsboro;
@@ -67,10 +69,23 @@
 }
 
 #reverse {
+    width: 60px;
+    height: 30px;
     border-radius: 5px;
     float: left;
     background-color: gainsboro;
     color: dimgray;
+}
+
+#iconF {
+    height:30px;
+    width: 30px;
+    transform: scaleX(-1);
+}
+
+#iconR {
+    height:30px;
+    width: 30px;
 }
 
 .leaflet-popup-content p {
