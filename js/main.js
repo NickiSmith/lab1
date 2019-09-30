@@ -1,24 +1,121 @@
 /* Leaflet Lab Map (Lab 1) */
 
 //function to instantiate the Leaflet map
-function createMap() {    
+function createMap() {  
+    
+    //create Stamen Terrain base tilelayer
+    var terrain = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.{ext}', {
+        attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &mdash; Observation Data provided by <a href="https://ebird.org/home">eBird</a>  -- origami bird by Symbolon from the Noun Project',
+        subdomains: 'abcd',
+        minZoom: 0,
+        maxZoom: 18,
+        ext: 'png'
+    })
+    
+    var toner = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.{ext}', {
+        attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &mdash; Observation Data provided by <a href="https://ebird.org/home">eBird</a>  -- origami bird by Symbolon from the Noun Project',
+        subdomains: 'abcd',
+        minZoom: 0,
+        maxZoom: 18,
+        ext: 'png'
+    })
+    
+    //create test marker layer
+     var Alexandria=L.marker([38.80472, -77.04722]).bindPopup('Alexandria'),
+Allentown=L.marker([40.60833, -75.49056]).bindPopup('Allentown'),
+Arlington=L.marker([38.89028, -77.08444]).bindPopup('Arlington'),
+Athens=L.marker([33.96083, -83.37806]).bindPopup('Athens'),
+Atlanta=L.marker([33.74889, -84.38806]).bindPopup('Atlanta'),
+Augusta=L.marker([33.47083, -81.975]).bindPopup('Augusta'),
+Baltimore=L.marker([39.29028, -76.6125]).bindPopup('Baltimore'),
+Boston=L.marker([42.35833, -71.06028]).bindPopup('Boston'),
+Brandon=L.marker([27.9375, -82.28611]).bindPopup('Brandon'),
+Bridgeport=L.marker([41.16694, -73.20528]).bindPopup('Bridgeport'),
+Buffalo=L.marker([42.88639, -78.87861]).bindPopup('Buffalo'),
+Cambridge=L.marker([42.375, -71.10611]).bindPopup('Cambridge'),
+CapeCoral=L.marker([26.5625, -81.94972]).bindPopup('Cape Coral'),
+Cary=L.marker([35.79139, -78.78139]).bindPopup('Cary'),
+Charleston=L.marker([32.77639, -79.93111]).bindPopup('Charleston'),
+Charlotte=L.marker([35.22694, -80.84333]).bindPopup('Charlotte'),
+Chesapeake=L.marker([36.81889, -76.27528]).bindPopup('Chesapeake'),
+Clearwater=L.marker([27.96556, -82.80028]).bindPopup('Clearwater'),
+Columbia=L.marker([39.24028, -76.83972]).bindPopup('Columbia'),
+Columbia=L.marker([34.00056, -81.035]).bindPopup('Columbia'),
+Columbus=L.marker([32.46083, -84.98778]).bindPopup('Columbus'),
+CoralSprings=L.marker([26.27083, -80.27083]).bindPopup('Coral Springs'),
+Durham=L.marker([35.99389, -78.89889]).bindPopup('Durham'),
+Erie=L.marker([42.12917, -80.08528]).bindPopup('Erie'),
+Fayetteville=L.marker([35.0525, -78.87861]).bindPopup('Fayetteville'),
+FortLauderdale=L.marker([26.12194, -80.14361]).bindPopup('Fort Lauderdale'),
+Gainesville=L.marker([29.65139, -82.325]).bindPopup('Gainesville'),
+Greensboro=L.marker([36.0725, -79.79222]).bindPopup('Greensboro'),
+Hampton=L.marker([37.02972, -76.34556]).bindPopup('Hampton'),
+Hartford=L.marker([41.76361, -72.68556]).bindPopup('Hartford'),
+Hollywood=L.marker([26.01083, -80.14972]).bindPopup('Hollywood'),
+Jacksonville=L.marker([30.33194, -81.65583]).bindPopup('Jacksonville'),
+JerseyCity=L.marker([40.72806, -74.07806]).bindPopup('Jersey City'),
+Lowell=L.marker([42.63333, -71.31667]).bindPopup('Lowell'),
+Manchester=L.marker([42.99556, -71.45528]).bindPopup('Manchester'),
+Miami=L.marker([25.77389, -80.19389]).bindPopup('Miami'),
+NewHaven=L.marker([41.30806, -72.92861]).bindPopup('New Haven'),
+NewYork=L.marker([40.71417, -74.00639]).bindPopup('New York'),
+Newark=L.marker([40.73556, -74.17278]).bindPopup('Newark'),
+NewportNews=L.marker([36.97861, -76.42833]).bindPopup('Newport News'),
+Norfolk=L.marker([36.84667, -76.28556]).bindPopup('Norfolk'),
+NorthCharleston=L.marker([32.85444, -79.975]).bindPopup('North Charleston'),
+Orlando=L.marker([28.53806, -81.37944]).bindPopup('Orlando'),
+PalmBay=L.marker([28.03417, -80.58889]).bindPopup('Palm Bay'),
+Philadelphia=L.marker([39.95222, -75.16417]).bindPopup('Philadelphia'),
+Pittsburgh=L.marker([40.44056, -79.99611]).bindPopup('Pittsburgh'),
+PortStLucie=L.marker([27.29361, -80.35056]).bindPopup('Port St. Lucie'),
+Providence=L.marker([41.82389, -71.41333]).bindPopup('Providence'),
+Raleigh=L.marker([35.77194, -78.63889]).bindPopup('Raleigh'),
+Richmond=L.marker([37.55361, -77.46056]).bindPopup('Richmond'),
+Rochester=L.marker([43.15472, -77.61583]).bindPopup('Rochester'),
+Savannah=L.marker([32.08333, -81.1]).bindPopup('Savannah'),
+Springfield=L.marker([42.10139, -72.59028]).bindPopup('Springfield'),
+StPetersburg=L.marker([27.77056, -82.67944]).bindPopup('St. Petersburg'),
+Stamford=L.marker([41.05333, -73.53917]).bindPopup('Stamford'),
+Syracuse=L.marker([43.04806, -76.14778]).bindPopup('Syracuse'),
+Tallahassee=L.marker([30.43806, -84.28083]).bindPopup('Tallahassee'),
+Tampa=L.marker([27.94722, -82.45861]).bindPopup('Tampa'),
+VirginiaBeach=L.marker([36.85278, -75.97833]).bindPopup('Virginia Beach'),
+Washington=L.marker([38.895, -77.03667]).bindPopup('Washington'),
+Waterbury=L.marker([41.55806, -73.05194]).bindPopup('Waterbury'),
+Wilmington=L.marker([34.22556, -77.945]).bindPopup('Wilmington'),
+WinstonSalem=L.marker([36.09972, -80.24444]).bindPopup('Winston-Salem'),
+Worcester=L.marker([42.2625, -71.80278]).bindPopup('Worcester'),
+Yonkers=L.marker([40.93111, -73.89917]).bindPopup('Yonkers');
+
+    
+    //create layer group
+    var cities = L.layerGroup([Alexandria, Allentown, Arlington, Athens, Atlanta, Augusta, Baltimore, Boston, Brandon, Bridgeport, Buffalo, Cambridge, CapeCoral, Cary, Charleston, Charlotte, Chesapeake, Clearwater, Columbia, Columbia, Columbus, CoralSprings, Durham, Erie, Fayetteville, FortLauderdale, Gainesville, Greensboro, Hampton, Hartford, Hollywood, Jacksonville, JerseyCity, Lowell, Manchester, Miami, NewHaven, NewYork, Newark, NewportNews, Norfolk, NorthCharleston, Orlando, PalmBay, Philadelphia, Pittsburgh, PortStLucie, Providence, Raleigh, Richmond, Rochester, Savannah, Springfield, StPetersburg, Stamford, Syracuse, Tallahassee, Tampa, VirginiaBeach, Washington, Waterbury, Wilmington, WinstonSalem, Worcester, Yonkers 
+]);
+    
     //create the map
     var map = L.map('map', {
         center: [35, -73],
         zoom: 4.5,
         maxZoom: 7,
         minZoom: 4,
+        layers: [terrain]
         //maxBounds: myBounds
     });
-
-    //add Stamen Terrain base tilelayer
-    L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.{ext}', {
-        attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &mdash; Observation Data provided by <a href="https://ebird.org/home">eBird</a> origami bird by Symbolon from the Noun Project',
-        subdomains: 'abcd',
-        minZoom: 0,
-        maxZoom: 18,
-        ext: 'png'
-    }).addTo(map);
+    
+    var basemaps = {
+        "Terrain": terrain,
+        "Toner": toner
+    }
+    var overlayMaps = {
+        "Cities": cities
+    };
+    
+    var overlayMaps = {
+        "Cities": cities
+    }
+    
+   L.control.layers(basemaps, overlayMaps).addTo(map);
+    
 
     //call getData function - loads data using ajax
     getData(map);
@@ -121,36 +218,7 @@ function createPropSymbols(data, map, attributes) {
         }
     })
 
-   //create a Leaflet GeoJSON layer with pop > 250,000
-    var pop250 = L.geoJson(data, {
-        filter: function (feature, layer) {
-            var pop = Number(feature.properties.Population2012);
-            return pop > 250000;           
-        },
-        pointToLayer: function (feature, latlng) {
-            return pointToLayer(feature, latlng, attributes);
-        }
-    })
-   
-
-    //create a Leaflet GeoJSON with pop > 500,000
-    var pop500 = L.geoJson(data, {
-        filter: function (feature, layer) {
-            var pop = Number(feature.properties.Population2012);
-            return pop > 500000;
-        },
-        pointToLayer: function (feature, latlng) {
-            return pointToLayer(feature, latlng, attributes);
-        }
-    })
-
     pop100.addTo(map);
-
-    L.control.layers({
-        "Cities with population greater than 100,000": pop100,
-        "Cities with population greater than 250,000": pop250,
-        "Cities with population greater than 500,000": pop500
-    }).addTo(map);
 }
 
 
@@ -409,6 +477,9 @@ function getData(map) {
             
             //create an attributes array
             var attributes = processData(response);
+            
+            //adding a layer
+            //response.addTo(map);
             
             //call functions
             createPropSymbols(response, map, attributes); 
